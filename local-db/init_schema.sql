@@ -1,1 +1,1 @@
-create schema springtest;
+-- create schema springtest;

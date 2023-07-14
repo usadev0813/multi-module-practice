@@ -37,11 +37,16 @@ subprojects {
 
     // 하위 모든 프로젝트에 공통으로 사용되는 의존성을 선언합니다.
     dependencies {
-        'org.projectlombok:lombok'
-        'org.springframework.boot:spring-boot-configuration-processor'
-        'org.springframework.boot:spring-boot-starter-data-jpa'
-        'org.junit.jupiter:junit-jupiter-api:5.7.0'
-        'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        compileOnly 'org.projectlombok:lombok'
+
+        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+//        implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+//        implementation 'com.h2database:h2'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     }
 
     test {
@@ -50,28 +55,27 @@ subprojects {
 }
 
 project(':module-core') {
-    bootJar { enabled = false }
-    jar { enabled = true }
+    bootJar.enabled = false
+    jar.enabled = true
 
     dependencies {}
 }
 
 project(':module-stream') {
-    bootJar { enabled = true }
-    jar { enabled = false }
+    bootJar.enabled = true
+    jar.enabled = false
 
     dependencies {
-        project(':module-core')
+        implementation project(':module-core')
     }
 }
 
 project(':module-api') {
-    bootJar { enabled = true }
-    jar { enabled = false }
+    bootJar.enabled = true
+    jar.enabled = false
 
     dependencies {
-        project(':module-core')
-        'org.springframework.boot:spring-boot-starter-web'
+        implementation project(':module-core')
     }
 }
 // 공통 사항들
