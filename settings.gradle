@@ -1,0 +1,5 @@
+rootProject.name = 'Springboot-Multimodules-Practice'
+include 'module-core'
+include 'module-api'
+include 'module-stream'
+
