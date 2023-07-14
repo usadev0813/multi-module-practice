@@ -45,16 +45,29 @@ subprojects {
     }
 }
 
+project(':module-core') {
+    // 공통 코드
+    bootJar { enabled = false } // core 은 bootJar 로 패키징 할 필요 없음
+    jar { enabled = true }
+
+    dependencies {}
+}
 
 project(':module-stream') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+
     dependencies {
-        compile project(':module-core') // 컴파일 시 module-core project 로딩
+        project(':module-core') // 컴파일 시 module-core project 로딩
     }
 }
 
 project(':module-api') {
+    bootJar { enabled = true }
+    jar { enabled = false }
+
     dependencies {
-        compile project(':module-core') // 컴파일 시 module-core project 로딩
-        implementation 'org.springframework.boot:spring-boot-starter-web'
+        project(':module-core') // 컴파일 시 module-core project 로딩
+        'org.springframework.boot:spring-boot-starter-web'
     }
 }
