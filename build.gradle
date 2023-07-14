@@ -58,14 +58,3 @@ project(':module-api') {
         implementation 'org.springframework.boot:spring-boot-starter-web'
     }
 }
-
-project(':module-core') {
-    // 공통 코드
-
-    bootJar { enabled = false } // core 은 bootJar 로 패키징 할 필요 없음
-    jar { enabled = true }
-
-    dependencies {
-
-    }
-}
