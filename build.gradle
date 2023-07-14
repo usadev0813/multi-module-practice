@@ -1,33 +1,71 @@
-plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.1.1'
-    id 'io.spring.dependency-management' version '1.1.0'
+buildscript {
+    ext {
+        springBootVersion = '2.6.2'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+    }
 }
 
-group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+// 하위 모든 프로젝트 공통 세팅
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-java {
-    sourceCompatibility = '17'
+    group 'org.example'
+    version '1.0-SNAPSHOT'
+
+    sourceCompatibility = '1.17'
+    targetCompatibility = '1.17'
+    compileJava.options.encoding = 'UTF-8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    // 하위 모듈에서 공통으로 사용하는 세팅 추가
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+
+        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+        implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-repositories {
-    mavenCentral()
+
+project(':module-stream') {
+    dependencies {
+        compile project(':module-core') // 컴파일 시 module-core project 로딩
+    }
 }
 
-dependencies {
-    // sptringboot
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-
-    // DB
-    implementation("org.postgresql:postgresql:42.3.3")
-
-    // test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+project(':module-api') {
+    dependencies {
+        compile project(':module-core') // 컴파일 시 module-core project 로딩
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+project(':module-core') {
+    // 공통 코드
+
+    bootJar { enabled = false } // core 은 bootJar 로 패키징 할 필요 없음
+    jar { enabled = true }
+
+    dependencies {
+
+    }
 }
